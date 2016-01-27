@@ -1,8 +1,8 @@
 package offline;
 
 public class FtpRequest {
-	
-	public static Object processRequest(String message)
+	//* creer les méthodes non statiques qui ne retourne rien
+	public static void processRequest(String message)
 	{
 		String[] command = message.split(" ", 1);
 		switch(command[0])
