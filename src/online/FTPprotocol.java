@@ -8,21 +8,31 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import offline.Etat;
+
 public class FTPprotocol implements Runnable {
 	protected Socket socket ;
+	protected Etat etat;
 	
 	public FTPprotocol(Socket socket) {
 		this.socket = socket ;
+		this.etat = Etat.UNIDENTIFIED ;
 	}
 
-	public String read() throws IOException {
-		InputStream input = this.socket.getInputStream() ;
+	public String read(){
+		InputStream input;
+		try {
+			input = this.socket.getInputStream();
 		InputStreamReader inputReader = new InputStreamReader(input);
 		BufferedReader buff = new BufferedReader(inputReader);
 		
 		String s = buff.readLine();
-		
 		return s;
+
+		} catch (IOException e) {
+			return "iofail" ;
+		}
+		
 		
 	}
 	
@@ -33,7 +43,10 @@ public class FTPprotocol implements Runnable {
 	}
 	
 	public void run() {
-		
+		while(true) {
+			String request = this.read() ;
+			
+		}
 
 	}
 
