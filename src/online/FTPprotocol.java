@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 import offline.Etat;
@@ -13,6 +14,10 @@ import offline.Etat;
 public class FTPprotocol implements Runnable {
 	protected Socket socket ;
 	protected Etat etat;
+	protected InputStream input;
+	protected InputStreamReader inputReader;
+	protected BufferedReader buff;
+	protected String username = null ;
 	
 	public FTPprotocol(Socket socket) {
 		this.socket = socket ;
@@ -20,11 +25,10 @@ public class FTPprotocol implements Runnable {
 	}
 
 	public String read(){
-		InputStream input;
 		try {
-			input = this.socket.getInputStream();
-		InputStreamReader inputReader = new InputStreamReader(input);
-		BufferedReader buff = new BufferedReader(inputReader);
+			this.input = this.socket.getInputStream();
+		this.inputReader = new InputStreamReader(input);
+		this.buff = new BufferedReader(inputReader);
 		
 		String s = buff.readLine();
 		return s;
@@ -44,6 +48,13 @@ public class FTPprotocol implements Runnable {
 	
 	public void run() {
 		while(true) {
+			// envoyez message avec code 200
+			try {
+				this.write("200") ;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			String request = this.read() ;
 			
 		}
