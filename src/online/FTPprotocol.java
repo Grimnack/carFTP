@@ -69,7 +69,7 @@ public class FTPprotocol implements Runnable {
 		while(true) {
 			// envoyez message avec code 200
 			try {
-
+				System.out.println(Server.codeToMessage(200));
 				this.write(Server.codeToMessage(200)) ;
 				String request = this.read() ;
 				this.ftpRequest.processRequest(request);
