@@ -45,6 +45,14 @@ public class FTPprotocol implements Runnable {
 		DataOutputStream dos = new DataOutputStream(os);
 		dos.write(msg.getBytes());
 	}
+
+	public String getUserName() {
+		return this.username ;
+	}
+	
+	public void setUserName(String nouveau) {
+		this.username = nouveau ;
+	}
 	
 	public void run() {
 		while(true) {
