@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import offline.Etat;
+import offline.FtpRequest;
 
 public class FTPprotocol implements Runnable {
 	protected Socket socket ;
@@ -17,10 +18,12 @@ public class FTPprotocol implements Runnable {
 	protected InputStreamReader inputReader;
 	protected BufferedReader buff;
 	protected String username = null ;
+	protected FtpRequest ftpRequest;
 	
 	public FTPprotocol(Socket socket) {
 		this.socket = socket ;
 		this.etat = Etat.UNIDENTIFIED ;
+		this.ftpRequest = new FtpRequest(this);
 	}
 	
 	public Etat getState() {
@@ -38,6 +41,7 @@ public class FTPprotocol implements Runnable {
 		this.buff = new BufferedReader(inputReader);
 		
 		String s = buff.readLine();
+		System.out.println(s);
 		return s;
 
 		} catch (IOException e) {
@@ -67,11 +71,13 @@ public class FTPprotocol implements Runnable {
 			try {
 
 				this.write(Server.codeToMessage(200)) ;
+				String request = this.read() ;
+				this.ftpRequest.processRequest(request);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			String request = this.read() ;
+			
 			
 		}
 
