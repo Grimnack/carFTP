@@ -1,49 +1,62 @@
 package offline;
 
+import java.io.IOException;
+
+import online.FTPprotocol;
+
 public class FtpRequest {
+	
+	protected FTPprotocol ftp;
+	
+	public FtpRequest(FTPprotocol protocol)
+	{
+		this.ftp = protocol;
+	}
+	
 	//* creer les méthodes non statiques qui ne retourne rien
-	public static void processRequest(String message)
+	public void processRequest(String message)
 	{
 		String[] command = message.split(" ", 1);
 		switch(command[0])
 		{
-			case "USER": return processUSER(command[1]);
-			case "PASS": return processPASS(command[1]);
-			case "RETR": return processRETR(command[1]);
-			case "STOR": return processSTOR(command[1]);
-			case "LIST": return processLIST(command[1]);
-			case "QUIT": return processQUIT(command[1]);
+			case "USER":  processUSER(command[1]);
+			case "PASS":  processPASS(command[1]);
+			case "RETR":  processRETR(command[1]);
+			case "STOR":  processSTOR(command[1]);
+			case "LIST":  processLIST(command[1]);
+			case "QUIT":  processQUIT(command[1]);
 		}
 	}
 
-	private static Object processQUIT(String string) {
+	private void processQUIT(String string) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
-	private static Object processLIST(String string) {
+	private void processLIST(String string) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
-	private static Object processSTOR(String string) {
+	private void processSTOR(String string) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
-	private static Object processRETR(String string) {
+	private void processRETR(String string) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
-	private static Object processPASS(String string) {
+	private void processPASS(String request,String username) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
-	private static Object processUSER(String string) {
-		// TODO Auto-generated method stub
-		return null;
+	private void processUSER(String user) throws IOException {
+		this.ftp.username = user;
+		this.ftp.write("331 : Username OK need Password");
+		
 	}
 
 }
