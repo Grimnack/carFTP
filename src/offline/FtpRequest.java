@@ -54,7 +54,7 @@ public class FtpRequest {
 	}
 
 	private void processUSER(String user) throws IOException {
-		this.ftp.username = user;
+		this.ftp.setUserName(user);
 		this.ftp.write("331 : Username OK need Password");
 		
 	}
