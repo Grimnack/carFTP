@@ -29,7 +29,7 @@ public class FtpRequest {
 	}
 
 	private void processQUIT(String string) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
