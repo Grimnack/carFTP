@@ -57,7 +57,7 @@ public class FTPprotocol implements Runnable {
 		while(true) {
 			// envoyez message avec code 200
 			try {
-				this.write("200 connexion ok") ;
+				this.write(Server.codeToMessage(200)) ;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
