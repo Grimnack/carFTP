@@ -22,6 +22,14 @@ public class FTPprotocol implements Runnable {
 		this.socket = socket ;
 		this.etat = Etat.UNIDENTIFIED ;
 	}
+	
+	public Etat getState() {
+		return this.etat;
+	}
+	
+	public void  setState(Etat nouveau){
+		this.etat = nouveau ;
+	}
 
 	public String read(){
 		try {
