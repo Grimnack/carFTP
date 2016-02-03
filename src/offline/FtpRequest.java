@@ -14,7 +14,7 @@ public class FtpRequest {
 	}
 	
 	//* creer les méthodes non statiques qui ne retourne rien
-	public void processRequest(String message)
+	public void processRequest(String message) throws IOException
 	{
 		String[] command = message.split(" ", 1);
 		switch(command[0])
@@ -48,7 +48,7 @@ public class FtpRequest {
 		
 	}
 
-	private void processPASS(String request,String username) {
+	private void processPASS(String request) {
 		// TODO Auto-generated method stub
 		
 	}
