@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Server {
 	
 	protected static ServerSocket servsocket ;
-	protected static ConcurrentHashMap<Integer, String> reponses ;
+	protected static ConcurrentHashMap<Integer, String> reponses = new ConcurrentHashMap<>() ;
 	
 	public Server(int port) throws IOException {
 		Server.servsocket = new ServerSocket(port);
