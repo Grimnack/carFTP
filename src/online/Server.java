@@ -16,7 +16,7 @@ public class Server {
 		while(true) {
 			Socket socket = this.servsocket.accept() ;
 			Thread thread = new Thread(new FTPprotocol(socket)) ;
-			thread.run() ;
+			thread.start() ;
 		}
 	}
 	
