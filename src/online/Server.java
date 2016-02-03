@@ -20,6 +20,18 @@ public class Server {
 		}
 	}
 	
+	public static void main(String[] args){
+		int port = Integer.parseInt(args[1]);
+		try {
+			Server server = new Server(port);
+			server.launch();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 	
 	
