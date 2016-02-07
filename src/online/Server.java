@@ -15,7 +15,7 @@ public class Server {
 		reponses.put(200, "200 OK\n");
 		reponses.put(211, "211 End\n");
 		reponses.put(234, "234 AUTH command OK. Initializing SSL connection.\n");
-		reponses.put(257, "257 \n");
+		reponses.put(257, "257 /home \n");//test
 		reponses.put(400, "400 Command not accepted, try again\n");
 		reponses.put(421, "421 Service not available\n");
 		reponses.put(425, "425 Can't open data connection\n");

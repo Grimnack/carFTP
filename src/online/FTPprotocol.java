@@ -41,7 +41,7 @@ public class FTPprotocol implements Runnable {
 		this.buff = new BufferedReader(inputReader);
 		
 		String s = buff.readLine();
-		System.out.println(s);
+		//System.out.println(s);
 		return s;
 
 		} catch (IOException e) {
@@ -66,11 +66,18 @@ public class FTPprotocol implements Runnable {
 	}
 	
 	public void run() {
+		System.out.println(Server.codeToMessage(200));
+		try {
+			this.write(Server.codeToMessage(200)) ;
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		while(true) {
+			
 			// envoyez message avec code 200
 			try {
-				System.out.println(Server.codeToMessage(200));
-				this.write(Server.codeToMessage(200)) ;
+				
 				String request = this.read() ;
 				this.ftpRequest.processRequest(request);
 			} catch (IOException e) {
