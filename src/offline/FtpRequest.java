@@ -65,9 +65,10 @@ public class FtpRequest {
 		System.out.println(Server.codeToMessage(257));
 	}
 
-	private void processSYST(String message) {
+	private void processSYST(String message) throws IOException {
 		System.out.println("SYST detected !");
-		
+		this.ftp.write(Server.codeToMessage(215));
+		System.out.println(Server.codeToMessage(215));
 	}
 
 	private void processQUIT(String string) {
@@ -100,7 +101,11 @@ public class FtpRequest {
 	private void processUSER(String user) throws IOException {
 		System.out.println("USER detected");
 		this.ftp.setUserName(user);
-		this.ftp.write("331 : Username OK need Password\n");
+		if(!user.toUpperCase().equals("ANONYMOUS"))
+		{
+			this.ftp.write("331 : Username OK need Password\n");
+		}
+		
 		
 	}
 
