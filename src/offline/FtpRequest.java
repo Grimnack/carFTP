@@ -2,6 +2,7 @@ package offline;
 
 import java.io.IOException;
 
+import offline.Etat.StateEnum;
 import online.FTPprotocol;
 import online.Server;
 
@@ -91,10 +92,21 @@ public class FtpRequest {
 		
 	}
 
-	private void processPASS(String request) throws IOException {
-		System.out.println("PASS detected");
-		if(this.)
-		this.ftp.write(Server.codeToMessage(200));
+	private void processPASS(String passGiven) throws IOException {
+		System.out.println("PASS detected : " + passGiven);
+		String ourPass = Server.getPass(this.ftp.getUserName()) ;
+		if(this.ftp.getState().getState()== StateEnum.USERGIVEN){
+			if(ourPass.equals(passGiven)){
+				this.ftp.setState(StateEnum.IDENTIFIED) ;
+				this.ftp.write(Server.codeToMessage(230)) ;
+			}else{
+				this.ftp.setState(StateEnum.UNIDENTIFIED) ;
+				this.ftp.write(Server.codeToMessage(430)) ;
+			}
+		}else{
+			this.ftp.write(Server.codeToMessage(400));
+		}
+		
 		//le traitement on verra après;
 		
 	}
@@ -104,7 +116,11 @@ public class FtpRequest {
 		this.ftp.setUserName(user);
 		if(!user.toUpperCase().equals("ANONYMOUS"))
 		{
+			this.ftp.setState(StateEnum.USERGIVEN);
 			this.ftp.write("331 : Username OK need Password\n");
+		}else{
+			this.ftp.setState(StateEnum.ANONYMOUS) ;
+			this.ftp.write(Server.codeToMessage(230));
 		}
 		
 		

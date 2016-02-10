@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import offline.Etat;
+import offline.Etat.StateEnum;
 import offline.FtpRequest;
 
 public class FTPprotocol implements Runnable {
@@ -22,7 +23,7 @@ public class FTPprotocol implements Runnable {
 	
 	public FTPprotocol(Socket socket) {
 		this.socket = socket ;
-		this.etat = new Etat(".") ;
+		this.etat = new Etat(".",this.socket.getPort()) ;
 		this.ftpRequest = new FtpRequest(this);
 	}
 	
@@ -30,8 +31,8 @@ public class FTPprotocol implements Runnable {
 		return this.etat;
 	}
 	
-	public void  setState(Etat nouveau){
-		this.etat = nouveau ;
+	public void  setState(StateEnum state){
+		this.etat.setState(state)  ;
 	}
 
 	public String read(){
@@ -79,6 +80,7 @@ public class FTPprotocol implements Runnable {
 			try {
 				
 				String request = this.read() ;
+				System.out.println(request);
 				this.ftpRequest.processRequest(request);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
