@@ -93,6 +93,7 @@ public class FtpRequest {
 
 	private void processPASS(String request) throws IOException {
 		System.out.println("PASS detected");
+		if(this.)
 		this.ftp.write(Server.codeToMessage(200));
 		//le traitement on verra après;
 		

@@ -22,7 +22,7 @@ public class FTPprotocol implements Runnable {
 	
 	public FTPprotocol(Socket socket) {
 		this.socket = socket ;
-		this.etat = Etat.UNIDENTIFIED ;
+		this.etat = new Etat(".") ;
 		this.ftpRequest = new FtpRequest(this);
 	}
 	
