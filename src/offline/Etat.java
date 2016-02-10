@@ -7,12 +7,17 @@ public class Etat {
 	protected boolean actif ;
 	protected StateEnum state ;
 	protected String username ;
+	protected boolean newPort ;
+	protected String portAddresse ;
+	protected int port ;
 	
-	public Etat(String pathname){
+	public Etat(String pathname,int port){
 		this.state = StateEnum.UNIDENTIFIED ;
 		this.actif = true ;
 		this.pathname = pathname ;
 		this.username = "" ;
+		this.port = port ;
+		this.newPort = false ;
 	}
 	
 	public String getUserName() {
@@ -37,6 +42,14 @@ public class Etat {
 	
 	public void setState(StateEnum state) {
 		this.state = state ;
+	}
+	
+	public void setPort(int port){
+		this.port = port ;
+	}
+	
+	public void setAddresse(String addresse) {
+		this.portAddresse = addresse ;
 	}
 	
 	public void changMod() {
