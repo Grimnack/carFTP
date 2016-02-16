@@ -14,6 +14,7 @@ import offline.FtpRequest;
 
 public class FTPprotocol implements Runnable {
 	protected Socket socket ;
+	protected Socket portSocket;
 	protected Etat etat;
 	protected InputStream input;
 	protected InputStreamReader inputReader;
@@ -34,6 +35,21 @@ public class FTPprotocol implements Runnable {
 	public void  setState(StateEnum state){
 		this.etat.setState(state)  ;
 	}
+	
+	public Socket getPortSocket()
+	{
+		return this.portSocket;
+	}
+	
+	public void setPortStocket(Socket ps)
+	{
+		this.portSocket = ps;
+	}
+	
+	public Socket getSocket()
+	{
+		return this.socket;
+	}
 
 	public String read(){
 		try {
@@ -52,8 +68,9 @@ public class FTPprotocol implements Runnable {
 		
 	}
 	
-	public void write(String msg) throws IOException{
-		OutputStream os = this.socket.getOutputStream();
+	
+	public void write(String msg, Socket socket) throws IOException{
+		OutputStream os = socket.getOutputStream();
 		DataOutputStream dos = new DataOutputStream(os);
 		dos.write(msg.getBytes());
 	}
@@ -69,7 +86,7 @@ public class FTPprotocol implements Runnable {
 	public void run() {
 		System.out.println(Server.codeToMessage(200));
 		try {
-			this.write(Server.codeToMessage(200)) ;
+			this.write(Server.codeToMessage(200),this.socket) ;
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

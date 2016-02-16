@@ -13,9 +13,11 @@ public class Server {
 	
 	public Server(int port) throws IOException {
 		Server.servsocket = new ServerSocket(port);
+		reponses.put(125, "125 Connection established, transfert begins\n");
 		reponses.put(200, "200 OK\n");
 		reponses.put(211, "211 End\n");
 		reponses.put(215, "215 UNIX\n");
+		reponses.put(226, "226 Transfert finished with succes\n");
 		reponses.put(230, "230 AUTH OK\n");
 		reponses.put(234, "234 AUTH command OK. Initializing SSL connection.\n");
 		reponses.put(257, "257 /home \n");//test
