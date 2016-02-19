@@ -1,5 +1,6 @@
 package offline;
 
+
 public class Etat {
 	
 	public enum StateEnum { UNIDENTIFIED ,USERGIVEN ,IDENTIFIED, ANONYMOUS } ;
@@ -51,7 +52,10 @@ public class Etat {
 	public void setAddresse(String addresse) {
 		this.portAddresse = addresse ;
 	}
-	
+	/**
+	 * Si le mode actuel est passif alors il devient actif 
+	 * et inversement  
+	 */
 	public void changMod() {
 		this.actif = !this.actif ;
 	}

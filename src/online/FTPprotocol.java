@@ -28,13 +28,21 @@ public class FTPprotocol implements Runnable {
 		this.ftpRequest = new FtpRequest(this);
 	}
 	
+	/**
+	 * @return etat actuel du thread
+	 */
 	public Etat getState() {
 		return this.etat;
 	}
 	
+	/**
+	 * Permet de changer l'etat du server
+	 * @param state le nouvel etat
+	 */
 	public void  setState(StateEnum state){
 		this.etat.setState(state)  ;
 	}
+	
 	
 	public Socket getPortSocket()
 	{
@@ -50,7 +58,11 @@ public class FTPprotocol implements Runnable {
 	{
 		return this.socket;
 	}
-
+	
+	/**
+	 * en attente d'un message du client
+	 * @return le message du client
+	 */
 	public String read(){
 		try {
 			this.input = this.socket.getInputStream();
@@ -68,21 +80,36 @@ public class FTPprotocol implements Runnable {
 		
 	}
 	
-	
+	/**
+	 * envoie un message au client
+	 * @param msg
+	 * @param socket
+	 * @throws IOException
+	 */
 	public void write(String msg, Socket socket) throws IOException{
 		OutputStream os = socket.getOutputStream();
 		DataOutputStream dos = new DataOutputStream(os);
 		dos.write(msg.getBytes());
 	}
-
+	
+	/**
+	 * @return si le client a envoyé la commande USER renvoie le username donné, sinon null
+	 */
 	public String getUserName() {
 		return this.username ;
 	}
 	
+	/**
+	 * permet de modifier l'attribut username
+	 * @param nouveau 
+	 */
 	public void setUserName(String nouveau) {
 		this.username = nouveau ;
 	}
 	
+	/**
+	 * l'execution de FTPprotocol
+	 */
 	public void run() {
 		System.out.println(Server.codeToMessage(200));
 		try {

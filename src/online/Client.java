@@ -24,7 +24,9 @@ public class Client {
 			e.printStackTrace();
 		} 
 	}
-	
+	/**
+	 * en attente d'un message du serveur
+	 */
 	public void read()
 	{
 		try
@@ -44,6 +46,10 @@ public class Client {
 		}
 	}
 	
+	/**
+	 * Envoie un message au serveur
+	 * @param message le message a envoyer 
+	 */
 	public void write(String message)
 	{
 		try

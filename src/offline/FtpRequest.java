@@ -19,7 +19,11 @@ public class FtpRequest {
 		this.ftp = protocol;
 	}
 	
-	//* creer les méthodes non statiques qui ne retourne rien
+	/**
+	 * Permet de traiter le message en fonction du premier mot
+	 * @param message le message envoye par le client
+	 * @throws IOException 
+	 */
 	public void processRequest(String message) throws IOException
 	{
 		System.out.println("Process Request message : "+message);
@@ -60,7 +64,7 @@ public class FtpRequest {
 			break;
 			case "QUIT":  processQUIT(message);
 			break;
-			case "SYST":  processSYST(message);
+			case "SYST":  processSYST();
 			break;
 			case "PWD":   processPWD(message);
 			break;
@@ -106,7 +110,11 @@ public class FtpRequest {
 		System.out.println(Server.codeToMessage(257));
 	}
 
-	private void processSYST(String message) throws IOException {
+	/**
+	 * envoie au client le systeme du serveur
+	 * @throws IOException
+	 */
+	private void processSYST() throws IOException {
 		System.out.println("SYST detected !");
 		this.ftp.write(Server.codeToMessage(215),this.ftp.getSocket());
 		System.out.println(Server.codeToMessage(215));
@@ -117,6 +125,11 @@ public class FtpRequest {
 		
 	}
 
+	/**
+	 * envoie au client les informations du repertoire courant du serveur
+	 * @param string
+	 * @throws IOException
+	 */
 	private void processLIST(String string) throws IOException {
 		this.ftp.write(Server.codeToMessage(125),this.ftp.getSocket() );
 		System.out.println(Server.codeToMessage(125));
@@ -144,6 +157,11 @@ public class FtpRequest {
 		
 	}
 
+	/**
+	 * si le mot de passe est bon envoie un message ok sinon message user ou mdp incorrect
+	 * @param passGiven le mot de passe envoyé par le client
+	 * @throws IOException
+	 */
 	private void processPASS(String passGiven) throws IOException {
 		System.out.println("PASS detected : " + passGiven);
 		String ourPass = Server.getPass(this.ftp.getUserName()) ;
@@ -163,6 +181,11 @@ public class FtpRequest {
 		
 	}
 
+	/**
+	 * traitement a faire si la commande est USER
+	 * @param user le nom d'user envoyé par le client
+	 * @throws IOException
+	 */
 	private void processUSER(String user) throws IOException {
 		System.out.println("USER detected");
 		this.ftp.setUserName(user);

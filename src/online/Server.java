@@ -11,6 +11,12 @@ public class Server {
 	protected static ConcurrentHashMap<Integer, String> reponses = new ConcurrentHashMap<Integer,String>() ;
 	protected static ConcurrentHashMap<String,String> lesComptes = new ConcurrentHashMap<String, String>();
 	
+	/**
+	 * le constructeur construit en meme temps une table de message contenant tous les messages 
+	 * en fonction de leur code 
+	 * @param port 
+	 * @throws IOException
+	 */
 	public Server(int port) throws IOException {
 		Server.servsocket = new ServerSocket(port);
 		reponses.put(125, "125 Connection established, transfert begins\n");
@@ -34,15 +40,29 @@ public class Server {
 		lesComptes.put("superman", "notabird");
 	}
 	
+	/**
+	 * fonction interne permetant d'obtenir le message en fonction du code
+	 * @param code reponse possible du protocol FTP
+	 * @return le message a envoyer en reponse au client
+	 */
 	public static String codeToMessage(int code){
 		return Server.reponses.get(code) ;
 	}
 	
+	/**
+	 * on obtient le mot de passe en fonction du nom d'utilisateur donné
+	 * @param username
+	 * @return password
+	 */
 	public static String getPass(String username){
 		return Server.lesComptes.get(username);
 	}
 	
 	
+	/**
+	 * lance un thread pour un client donné
+	 * @throws IOException
+	 */
 	public void launch() throws IOException {
 		while(true) {
 			Socket socket = Server.servsocket.accept() ;
@@ -51,6 +71,10 @@ public class Server {
 		}
 	}
 	
+	/**
+	 * la fonction lançant le serveur
+	 * @param args le port de type int
+	 */
 	public static void main(String[] args){
 		int port = Integer.parseInt(args[0]);
 		try {
