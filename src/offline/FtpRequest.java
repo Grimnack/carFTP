@@ -1,8 +1,10 @@
 package offline;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -180,6 +182,27 @@ public class FtpRequest {
 	}
 
 	private void processSTOR(String path) throws IOException {
+		
+		Socket socket;
+		
+		if(this.ftp.getState().isActif()){
+			socket = this.ftp.getPortSocket();
+		}else{
+			socket = this.ftp.getTransfertSocket();
+		}
+		
+		File file = new File(path);
+		DataInputStream dis = new DataInputStream(socket.getInputStream());
+		if(file.exists())
+		{
+			FileOutputStream fos = new FileOutputStream(file);
+			byte[] data = new byte[(int)file.length()];
+			dis.read(data);
+			fos.write(data);
+			socket.close();
+			
+			
+		}
 	
 		
 	}
