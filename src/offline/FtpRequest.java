@@ -141,9 +141,10 @@ public class FtpRequest {
 		{
 			res = res+files[i].getName()+"\n";
 		}
-		this.ftp.write(res+Server.codeToMessage(226),this.ftp.getPortSocket() );
-		this.ftp.write(Server.codeToMessage(200),this.ftp.getPortSocket() );
+		this.ftp.write(res,this.ftp.getPortSocket() );
+		this.ftp.write(Server.codeToMessage(226), this.ftp.getSocket());
 		System.out.println(Server.codeToMessage(226));
+		this.ftp.getPortSocket().close();
 		
 	}
 
