@@ -1,6 +1,8 @@
 package offline;
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -177,13 +179,40 @@ public class FtpRequest {
 		
 	}
 
-	private void processSTOR(String string) {
-		// TODO Auto-generated method stub
+	private void processSTOR(String path) throws IOException {
+	
 		
 	}
 
-	private void processRETR(String string) {
-		// TODO Auto-generated method stub
+	private void processRETR(String path) throws IOException {
+		if (!this.ftp.getState().isActif()){
+			if (this.ftp.getState().getState().equals(StateEnum.IDENTIFIED)){
+				File fichier = new File(path);
+				if (!fichier.exists()){
+					this.ftp.write(Server.codeToMessage(550), this.ftp.getSocket());
+				}else{
+					this.ftp.write(Server.codeToMessage(125), this.ftp.getSocket());
+					DataOutputStream dos= new DataOutputStream(this.ftp.getTransfertSocket().getOutputStream());
+					FileInputStream fis = new FileInputStream(fichier);
+					byte[] buff = new byte[this.ftp.getTransfertSocket().getSendBufferSize()];
+					int lecture = fis.read(buff);
+					while (lecture > 0 ){
+						System.out.println(lecture);
+						dos.write(buff,0,lecture);
+						lecture=fis.read(buff);
+					}
+					fis.close();
+					dos.flush();
+					this.ftp.write(Server.codeToMessage(226), this.ftp.getSocket());
+					
+					dos.close();
+				}
+				
+			}else{
+				//renvoyer 550
+			}
+			
+		}
 		
 	}
 

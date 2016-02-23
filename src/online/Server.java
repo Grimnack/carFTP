@@ -38,6 +38,7 @@ public class Server {
 		reponses.put(502, "502 Command not implemented\n");
 		reponses.put(530, "530 Not logged in\n");
 		reponses.put(532, "532 Need account for storing files\n");
+		reponses.put(550, "550 Requested action not taken : file not found\n");
 		lesComptes.put("matthieu", "caron") ;
 		lesComptes.put("superman", "notabird");
 	}
