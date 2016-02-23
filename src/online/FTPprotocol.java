@@ -15,6 +15,7 @@ import offline.FtpRequest;
 public class FTPprotocol implements Runnable {
 	protected Socket socket ;
 	protected Socket portSocket;
+	protected Socket transfert;
 	protected Etat etat;
 	protected InputStream input;
 	protected InputStreamReader inputReader;
@@ -59,6 +60,16 @@ public class FTPprotocol implements Runnable {
 		return this.socket;
 	}
 	
+	public Socket getTransfertSocket()
+	{
+		return this.transfert;
+	}
+	
+	public void setTransfertSocket(Socket newTransfert)
+	{
+		this.transfert = newTransfert;
+	}
+	
 	/**
 	 * en attente d'un message du client
 	 * @return le message du client
@@ -90,6 +101,7 @@ public class FTPprotocol implements Runnable {
 		OutputStream os = socket.getOutputStream();
 		DataOutputStream dos = new DataOutputStream(os);
 		dos.write(msg.getBytes());
+		dos.flush();
 	}
 	
 	/**
@@ -134,6 +146,10 @@ public class FTPprotocol implements Runnable {
 			
 		}
 
+	}
+
+	public int getPort() {
+		return this.socket.getPort();
 	}
 
 }

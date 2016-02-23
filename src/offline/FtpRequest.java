@@ -3,6 +3,7 @@ package offline;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -78,7 +79,22 @@ public class FtpRequest {
 	}
 
 	private void processPASV() {
-		// TODO Auto-generated method stub
+		if (this.ftp.getState().isActif() ){
+			this.ftp.getState().changMod() ;
+			int port = this.ftp.getPort() + 1;
+			try {
+				ServerSocket trans = new ServerSocket(port) ;
+				String addr = trans.getInetAddress().toString().replace('.', ',').split("/")[0];
+				String local = "127,0,0,1" ;
+				System.out.println(addr);
+				this.ftp.write(Server.codeToMessage(227)+" ("+local+','+(port/256)+','+(port % 256)+")\n",this.ftp.getSocket() );
+				Socket transSocket = trans.accept() ;
+				this.ftp.setTransfertSocket(transSocket);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 	}
 
@@ -141,16 +157,23 @@ public class FtpRequest {
 		System.out.println(Server.codeToMessage(125));
 		System.out.println("LIST detected !");
 		String res ="";
+		Socket socket;
+		if(this.ftp.getState().isActif()){
+			socket = this.ftp.getPortSocket();
+		}else{
+			socket = this.ftp.getTransfertSocket();
+		}
 		File file = new File(this.ftp.getState().getCurrentPath());
 		File[] files = file.listFiles();
 		for(int i = 0; i<files.length; i++)
 		{
-			res = res+files[i].getName()+"\n";
+			res = res+files[i].getName()+" \t";
 		}
-		this.ftp.write(res,this.ftp.getPortSocket() );
+		
+		this.ftp.write(res,socket);
 		this.ftp.write(Server.codeToMessage(226), this.ftp.getSocket());
 		System.out.println(Server.codeToMessage(226));
-		this.ftp.getPortSocket().close();
+		socket.close();
 		
 	}
 

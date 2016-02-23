@@ -20,6 +20,8 @@ public class Server {
 	public Server(int port) throws IOException {
 		Server.servsocket = new ServerSocket(port);
 		reponses.put(125, "125 Connection established, transfert begins\n");
+		reponses.put(150, "150 Opening ASCII mode data connection.\n");
+		reponses.put(227, "227 Entering passive mode");
 		reponses.put(200, "200 OK\n");
 		reponses.put(211, "211 End\n");
 		reponses.put(215, "215 UNIX\n");
