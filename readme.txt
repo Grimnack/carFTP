@@ -1,7 +1,7 @@
 CAR TP1
 ===========BINOME==========
-VAN DE KADSYE QUENTIN | q.van-de-kadsye@etudiant.univ-lille1.fr
-CARON Matthieu |matthieu1.caron@etu-lille1.fr
+VAN DE KADSYE QUENTIN | 
+CARON Matthieu |
 
 ==========AVANCEMENT===========
 Le mode passif ne fonctionne qu'avec le localhost.
