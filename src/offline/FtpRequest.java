@@ -51,6 +51,7 @@ public class FtpRequest {
 				break;
 				case "PORT":  processPORT(command[1]);
 				break;
+				case "CWD" :  processCWD(command[1]);
 			}
 		}
 		else
@@ -80,6 +81,12 @@ public class FtpRequest {
 		}
 	
 	
+	}
+
+	private void processCWD(String path) throws IOException {
+		this.ftp.getState().setPathname(path);
+		this.ftp.write(Server.codeToMessage(200), this.ftp.getSocket());
+		
 	}
 
 	private void processPASV() {
