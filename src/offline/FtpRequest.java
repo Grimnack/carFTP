@@ -70,10 +70,16 @@ public class FtpRequest {
 			break;
 			case "TYPE":  processTYPE(message);
 			break;
+			case "PASV": processPASV();
 			}
 		}
 	
 	
+	}
+
+	private void processPASV() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void processPORT(String args) {
