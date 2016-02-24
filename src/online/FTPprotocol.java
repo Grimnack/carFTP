@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import offline.Etat;
@@ -14,8 +15,8 @@ import offline.FtpRequest;
 
 public class FTPprotocol implements Runnable {
 	protected Socket socket ;
-	protected Socket portSocket;
-	protected Socket transfert;
+	protected int port;
+	protected InetAddress addresse ;
 	protected Etat etat;
 	protected InputStream input;
 	protected InputStreamReader inputReader;
@@ -27,6 +28,24 @@ public class FTPprotocol implements Runnable {
 		this.socket = socket ;
 		this.etat = new Etat(".",this.socket.getPort()) ;
 		this.ftpRequest = new FtpRequest(this);
+		this.addresse = this.socket.getInetAddress();
+	}
+	
+	public int getPortTransfer(){
+		return this.port;
+	}
+	public void setPortTransfer(int port){
+		this.port = port ;
+	}
+	public int getPort(){
+		return this.socket.getPort();
+	}
+	
+	public InetAddress getAddr(){
+		return this.addresse;
+	}
+	public void setAddr(InetAddress addr){
+		this.addresse = addr ;
 	}
 	
 	/**
@@ -45,30 +64,13 @@ public class FTPprotocol implements Runnable {
 	}
 	
 	
-	public Socket getPortSocket()
-	{
-		return this.portSocket;
-	}
-	
-	public void setPortStocket(Socket ps)
-	{
-		this.portSocket = ps;
-	}
-	
+
 	public Socket getSocket()
 	{
 		return this.socket;
 	}
 	
-	public Socket getTransfertSocket()
-	{
-		return this.transfert;
-	}
-	
-	public void setTransfertSocket(Socket newTransfert)
-	{
-		this.transfert = newTransfert;
-	}
+
 	
 	/**
 	 * en attente d'un message du client
@@ -146,10 +148,6 @@ public class FTPprotocol implements Runnable {
 			
 		}
 
-	}
-
-	public int getPort() {
-		return this.socket.getPort();
 	}
 
 }
