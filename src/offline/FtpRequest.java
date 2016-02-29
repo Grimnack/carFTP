@@ -93,11 +93,14 @@ public class FtpRequest {
 		if (this.ftp.getState().isActif() ){
 			this.ftp.getState().changMod() ;
 			int port = this.ftp.getPort() + 1;
+			System.out.println("putain");
 			try {
 				ServerSocket trans = new ServerSocket(port) ;
 				String local = "127,0,0,1" ;
+				System.out.println("here");
 				this.ftp.setPortTransfer(port);
 				this.ftp.setAddr(trans.getInetAddress());
+				System.out.println("here2");
 				this.ftp.write(Server.codeToMessage(227)+" ("+local+','+(port/256)+','+(port % 256)+")\n",this.ftp.getSocket() );
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
