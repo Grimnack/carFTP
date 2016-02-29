@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -18,6 +19,7 @@ import online.Server;
 public class FtpRequest {
 	
 	protected FTPprotocol ftp;
+	protected ServerSocket trans;
 	
 	public FtpRequest(FTPprotocol protocol)
 	{
@@ -92,15 +94,15 @@ public class FtpRequest {
 	private void processPASV() {
 		if (this.ftp.getState().isActif() ){
 			this.ftp.getState().changMod() ;
-			int port = this.ftp.getPort() + 1;
-			System.out.println("putain");
 			try {
-				ServerSocket trans = new ServerSocket(port) ;
+				this.trans = new ServerSocket(0) ;
+				int port = trans.getLocalPort() ;
 				String local = "127,0,0,1" ;
 				System.out.println("here");
 				this.ftp.setPortTransfer(port);
-				this.ftp.setAddr(trans.getInetAddress());
-				System.out.println("here2");
+				this.ftp.setAddr(InetAddress.getLocalHost());
+				System.out.println(ftp.getAddr());
+				System.out.println(ftp.getPortTransfer());
 				this.ftp.write(Server.codeToMessage(227)+" ("+local+','+(port/256)+','+(port % 256)+")\n",this.ftp.getSocket() );
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -178,7 +180,8 @@ public class FtpRequest {
 		String res ="";
 		Socket socket;
 		System.out.println(this.ftp.getAddr());
-		socket = new Socket(this.ftp.getAddr(),this.ftp.getPortTransfer());
+		socket = trans.accept();
+		//socket = new Socket(this.ftp.getAddr(),this.ftp.getPortTransfer());
 		File file = new File(this.ftp.getState().getCurrentPath());
 		File[] files = file.listFiles();
 		for(int i = 0; i<files.length; i++)
@@ -200,21 +203,24 @@ public class FtpRequest {
 	private void processSTOR(String path) throws IOException {
 		if (this.ftp.getState().getState().equals(StateEnum.IDENTIFIED)){
 			Socket socket;
-			
-			socket = new Socket(this.ftp.getAddr(),this.ftp.getPortTransfer());
-			
+			System.out.println("dans le processStor");
+			socket = this.trans.accept();
 			File file = new File(path);
-			DataInputStream dis = new DataInputStream(socket.getInputStream());
-			if(file.exists())
-			{
-				FileOutputStream fos = new FileOutputStream(file);
-				byte[] data = new byte[(int)file.length()];
-				dis.read(data);
-				fos.write(data);
-				socket.close();
-				
-				
+			System.out.println(file.exists());
+			this.ftp.write(Server.codeToMessage(125), this.ftp.getSocket());
+			InputStream is = socket.getInputStream();
+			FileOutputStream fos = new FileOutputStream(file) ;
+			byte[] buff = new byte[(int)file.length()] ;
+			int readb = is.read(buff);
+			while(readb != -1){
+				fos.write(buff, 0, readb);
+				readb = is.read(buff);
 			}
+			fos.flush();
+			fos.close();
+			socket.close();
+			this.ftp.write(Server.codeToMessage(226), this.ftp.getSocket());
+			is.close();
 		}else{
 			//pas auth
 		}
@@ -229,10 +235,10 @@ public class FtpRequest {
 				this.ftp.write(Server.codeToMessage(550), this.ftp.getSocket());
 			}else{
 				this.ftp.write(Server.codeToMessage(125), this.ftp.getSocket());
-				Socket trans = new Socket(this.ftp.getAddr(),this.ftp.getPortTransfer());
-				DataOutputStream dos= new DataOutputStream(trans.getOutputStream());
+				Socket socket = this.trans.accept();
+				DataOutputStream dos= new DataOutputStream(socket.getOutputStream());
 				FileInputStream fis = new FileInputStream(fichier);
-				byte[] buff = new byte[trans.getSendBufferSize()];
+				byte[] buff = new byte[socket.getSendBufferSize()];
 				int lecture = fis.read(buff);
 				while (lecture > 0 ){
 					System.out.println(lecture);
@@ -241,7 +247,7 @@ public class FtpRequest {
 				}
 				fis.close();
 				dos.flush();
-				trans.close();
+				socket.close();
 				this.ftp.write(Server.codeToMessage(226), this.ftp.getSocket());
 				
 				dos.close();
