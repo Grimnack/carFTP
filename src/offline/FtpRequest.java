@@ -1,5 +1,6 @@
 package offline;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -7,10 +8,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import offline.Etat.StateEnum;
 import online.FTPprotocol;
@@ -47,10 +51,6 @@ public class FtpRequest {
 				break;
 				case "STOR":  processSTOR(command[1]);
 				break;
-				case "LIST":  processLIST(command[1]);
-				break;
-				case "QUIT":  processQUIT(command[1]);
-				break;
 				case "PORT":  processPORT(command[1]);
 				break;
 				case "CWD" :  processCWD(command[1]);
@@ -60,14 +60,6 @@ public class FtpRequest {
 		{
 			switch(message)
 			{
-			case "USER":  processUSER(message);
-			break;
-			case "PASS":  processPASS(message);
-			break;
-			case "RETR":  processRETR(message);
-			break;
-			case "STOR":  processSTOR(message);
-			break;
 			case "LIST":  processLIST(message);
 			break;
 			case "QUIT":  processQUIT(message);
@@ -79,6 +71,8 @@ public class FtpRequest {
 			case "TYPE":  processTYPE(message);
 			break;
 			case "PASV": processPASV();
+			break;
+			default: System.out.println("default case");
 			}
 		}
 	
@@ -92,8 +86,9 @@ public class FtpRequest {
 	}
 
 	private void processPASV() {
-		if (this.ftp.getState().isActif() ){
+		if (this.ftp.getState().isActif() )
 			this.ftp.getState().changMod() ;
+		
 			try {
 				this.trans = new ServerSocket(0) ;
 				int port = trans.getLocalPort() ;
@@ -108,27 +103,18 @@ public class FtpRequest {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}else{
-			try {
-				this.ftp.write(Server.codeToMessage(200), this.ftp.getSocket());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		
 	}
 
 	private void processPORT(String args) {
 		String[] argsT = args.split(",");
 		int port = Integer.parseInt(argsT[4])*256+Integer.parseInt(argsT[5]);
-		this.ftp.setPortTransfer(port);
 		String ip =Integer.parseInt(argsT[0])+"."+Integer.parseInt(argsT[1])+"."+Integer.parseInt(argsT[2])+"."
 				+Integer.parseInt(argsT[3]);
 		InetAddress iaPort;
 		try {
-			iaPort = InetAddress.getByName(ip);
-			this.ftp.setAddr(iaPort);
+			this.ftp.setAddr(InetAddress.getByName(ip));
+			this.trans = new ServerSocket(port);
 			this.ftp.write(Server.codeToMessage(200),this.ftp.getSocket());
 			System.out.println(Server.codeToMessage(200));
 			
@@ -201,26 +187,36 @@ public class FtpRequest {
 	 * @throws IOException
 	 */
 	private void processSTOR(String path) throws IOException {
+		System.out.println(path);
 		if (this.ftp.getState().getState().equals(StateEnum.IDENTIFIED)){
 			Socket socket;
 			System.out.println("dans le processStor");
 			socket = this.trans.accept();
 			File file = new File(path);
+			InputStream is = socket.getInputStream();
+			BufferedInputStream filebuffer = new BufferedInputStream(is);
 			System.out.println(file.exists());
 			this.ftp.write(Server.codeToMessage(125), this.ftp.getSocket());
-			InputStream is = socket.getInputStream();
 			FileOutputStream fos = new FileOutputStream(file) ;
-			byte[] buff = new byte[(int)file.length()] ;
-			int readb = is.read(buff);
-			while(readb != -1){
-				fos.write(buff, 0, readb);
-				readb = is.read(buff);
+			List<Byte> byteList = new ArrayList<Byte>() ;
+			int nbByte = 0 ;
+			int b;
+			while((b=filebuffer.read())!=-1 ) {
+				byteList.add(new Byte((byte)b)) ;
+				nbByte ++;
 			}
+			filebuffer.close();
+			byte[] data = new byte[nbByte];
+			for (int i = 0; i < data.length; i++) {
+				data[i] = byteList.get(i).byteValue() ; 
+			}
+			fos.write(data);	
+			System.out.println("on a lu poil au");
 			fos.flush();
 			fos.close();
 			socket.close();
 			this.ftp.write(Server.codeToMessage(226), this.ftp.getSocket());
-			is.close();
+//			is.close();
 		}else{
 			//pas auth
 		}
